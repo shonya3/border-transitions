@@ -28,7 +28,6 @@ export class BorderElement extends LitElement {
 
 	static styles = css`
 		:host {
-			paint: contain;
 			display: block;
 			position: absolute;
 			border: 2px solid;
@@ -82,7 +81,6 @@ export class SquareElement extends LitElement {
 
 	static styles = css`
 		:host {
-			paint: contain;
 			display: block;
 			position: relative;
 			width: var(--size);
