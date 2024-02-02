@@ -95,8 +95,8 @@ export class SquareElement extends LitElement {
 @customElement('e-transition-app')
 export class TransitionAppElement extends LitElement {
 	@state() squares = [
-		{ size: 50, color: 'green', border: true },
-		{ size: 100, color: 'yellow', border: false },
+		{ size: 50, color: 'green' },
+		{ size: 100, color: 'yellow' },
 	];
 
 	@state() borderIndex = 0;
