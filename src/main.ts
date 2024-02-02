@@ -42,11 +42,6 @@ export class BorderElement extends LitElement {
 	`;
 }
 
-export interface Square {
-	size: number;
-	color: string;
-}
-
 @customElement('e-square')
 export class SquareElement extends LitElement {
 	@property({ type: Number }) size = 50;
