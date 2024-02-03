@@ -26,17 +26,31 @@ export class BorderElement extends LitElement {
 		}
 	}
 
+	render() {
+		return html` <p>Need to verify</p> `;
+	}
+
 	static styles = css`
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
 		:host {
 			display: block;
-			position: absolute;
-			border: 2px solid;
-			width: 200%;
-			height: 200%;
+			border: 20px solid;
+			width: 100%;
+			height: 100%;
 
-			top: 50%;
-			right: 50%;
-			transform: translate(50%, -50%);
+			position: absolute;
+		}
+
+		p {
+			font-size: var(--font-size);
+			position: absolute;
+			top: 0px;
+			right: 0px;
 		}
 	`;
 }
@@ -45,6 +59,8 @@ export class BorderElement extends LitElement {
 export class SquareElement extends LitElement {
 	@property({ type: Number }) size = 50;
 	@property() color = 'blue';
+	@property({ type: Boolean }) border = false;
+	@property({ attribute: 'border-color' }) borderColor = 'indigo';
 
 	protected willUpdate(map: PropertyValueMap<this>): void {
 		if (map.has('size')) {
@@ -54,40 +70,53 @@ export class SquareElement extends LitElement {
 		if (map.has('color')) {
 			this.style.setProperty('--background-color', `${this.color}`);
 		}
-	}
 
-	#handleBorderChange(e: Event) {
-		console.log('slot');
-		const target = e.target as HTMLSlotElement;
-		console.log(target.childNodes.length);
-
-		let color: string | null = null;
-		for (const child of target.assignedElements()) {
-			if (child instanceof BorderElement) {
-				color = child.color;
+		if (map.has('border')) {
+			if (this.border) {
+				console.log('we here');
+				this.style.setProperty('--background-color', this.borderColor);
+			} else {
+				console.log('we here');
+				this.style.setProperty('--background-color', this.color);
 			}
-		}
-
-		if (color) {
-			this.style.setProperty('--background-color', color);
-		} else {
-			this.style.setProperty('--background-color', this.color);
 		}
 	}
 
 	protected render() {
-		return html`<slot name="border" @slotchange=${this.#handleBorderChange}></slot>`;
+		return html`<div class="wrapper">
+			<div class="square"></div>
+			${this.border ? html`<e-border color=${this.borderColor} part="border"></e-border>` : nothing}
+		</div>`;
 	}
 
 	static styles = css`
+		* {
+			box-sizing: border-box;
+		}
 		:host {
-			display: block;
+			--padding-inline: 2rem;
+			--padding-block: var(--font-size, 1rem);
+		}
+
+		.wrapper {
 			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			padding-inline: var(--padding-inline);
+			padding-block: var(--padding-block);
+		}
+
+		.square {
 			width: var(--size);
 			height: var(--size);
 			background-color: var(--background-color);
-
 			transition: background-color 200ms ease-out;
+		}
+
+		e-border {
+			box-sizing: content-box;
 		}
 	`;
 }
@@ -95,8 +124,8 @@ export class SquareElement extends LitElement {
 @customElement('e-transition-app')
 export class TransitionAppElement extends LitElement {
 	@state() squares = [
-		{ size: 50, color: 'green' },
-		{ size: 100, color: 'yellow' },
+		{ size: 250, color: 'green' },
+		{ size: 200, color: 'yellow' },
 	];
 
 	@state() borderIndex = 0;
@@ -114,14 +143,12 @@ export class TransitionAppElement extends LitElement {
 	protected render() {
 		const squares = this.squares.map(({ size, color }, index) => {
 			return html`<li>
-				<e-square style="view-transition-name: ${this.#transitionName(color)}" size=${size} color=${color}>
-					${this.borderIndex === index
-						? html`<e-border
-								slot="border"
-								color="indigo"
-								style="view-transition-name: ${this.#transitionName('border')}"
-						  ></e-border>`
-						: nothing}
+				<e-square
+					.border=${index === this.borderIndex}
+					style="view-transition-name: ${this.#transitionName(color)}"
+					size=${size}
+					color=${color}
+				>
 				</e-square>
 			</li>`;
 		});
@@ -135,11 +162,25 @@ export class TransitionAppElement extends LitElement {
 	}
 
 	static styles = css`
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+			padding-inline: 0;
+			padding-block: 0;
+		}
+
 		:host {
 			display: block;
 		}
 
+		e-square::part(border) {
+			view-transition-name: unique-transition-name-for-border;
+		}
+
 		ul {
+			min-height: 50vh;
+
 			margin: 0;
 			background-color: #434343;
 			padding: 10rem;
