@@ -60,7 +60,7 @@ export class BorderElement extends LitElement {
 export class SquareElement extends LitElement {
 	@property({ type: Number }) size = 50;
 	@property() color = 'blue';
-	@property({ type: Boolean }) border = false;
+	@property({ type: Boolean, attribute: 'need-to-verify', reflect: true }) needToVerify = false;
 	@property({ attribute: 'border-color' }) borderColor = 'indigo';
 
 	protected willUpdate(map: PropertyValueMap<this>): void {
@@ -72,8 +72,8 @@ export class SquareElement extends LitElement {
 			this.style.setProperty('--background-color', `${this.color}`);
 		}
 
-		if (map.has('border')) {
-			if (this.border) {
+		if (map.has('needToVerify')) {
+			if (this.needToVerify) {
 				this.style.setProperty('--background-color', this.borderColor);
 			} else {
 				this.style.setProperty('--background-color', this.color);
@@ -84,7 +84,7 @@ export class SquareElement extends LitElement {
 	protected render() {
 		return html`<div class="wrapper">
 			<div class="square"></div>
-			${this.border ? html`<e-border color=${this.borderColor} part="border"></e-border>` : nothing}
+			${this.needToVerify ? html`<e-border color=${this.borderColor} part="border"></e-border>` : nothing}
 		</div>`;
 	}
 
@@ -143,7 +143,7 @@ export class TransitionAppElement extends LitElement {
 		const squares = this.squares.map(({ size, color }, index) => {
 			return html`<li>
 				<e-square
-					.border=${index === this.borderIndex}
+					?need-to-verify=${index === this.borderIndex}
 					style="view-transition-name: ${this.#transitionName(color)}"
 					size=${size}
 					color=${color}
