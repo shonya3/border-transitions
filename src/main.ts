@@ -39,7 +39,7 @@ export class BorderElement extends LitElement {
 
 		:host {
 			display: block;
-			border: 20px solid;
+			border: 2px solid;
 			width: 100%;
 			height: 100%;
 
@@ -49,8 +49,9 @@ export class BorderElement extends LitElement {
 		p {
 			font-size: var(--font-size);
 			position: absolute;
-			top: 0px;
+			top: -2px;
 			right: 0px;
+			transform: translateY(-100%);
 		}
 	`;
 }
@@ -73,10 +74,8 @@ export class SquareElement extends LitElement {
 
 		if (map.has('border')) {
 			if (this.border) {
-				console.log('we here');
 				this.style.setProperty('--background-color', this.borderColor);
 			} else {
-				console.log('we here');
 				this.style.setProperty('--background-color', this.color);
 			}
 		}
